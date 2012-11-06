@@ -41,6 +41,7 @@ int main(int argc, char** argv) {
 	    return -1;
 	}
 	
+	
 	// parameters
 	int binThreshold;			// threshold for image binarization
 	int numOfErosions;			// number of applications of the erosion operator
@@ -51,8 +52,8 @@ int main(int argc, char** argv) {
 	vector<Mat> contourLines1;
 	vector<Mat> contourLines2;
 	// TO DO !!!
-	//binThreshold = ???;
-	//numOfErosions = ???;
+	binThreshold = 100;
+	numOfErosions = 4;
 	getContourLine(exC1, contourLines1, binThreshold, numOfErosions);
 	getContourLine(exC2, contourLines2, binThreshold, numOfErosions);
 
@@ -182,9 +183,43 @@ thresh		threshold used to binarize the image
 k		number of applications of the erosion operator
 */
 void getContourLine(Mat& img, vector<Mat>& objList, int thresh, int k){
-
-    // TO DO !!!
-
+    
+  
+    Mat rimg;
+    
+    threshold(img,rimg,thresh,255,THRESH_BINARY);
+    Mat cimg = Mat(rimg.rows,rimg.cols,CV_8UC1);
+    Mat eimg = Mat(rimg.rows,rimg.cols,CV_8UC1);
+    
+    Mat e_elements = Mat(2,2,CV_8U);
+    
+    Point a = Point(-1,-1);
+    dilate(rimg,eimg,e_elements,a,k);
+    
+    //erode(rimg,eimg,e_elements,a,k);
+    
+    
+    findContours(eimg,objList,CV_RETR_LIST,CV_CHAIN_APPROX_SIMPLE);
+    
+    
+    Scalar color(255,2255,255);
+    drawContours(cimg, objList, -1,255,1);
+    
+    cimg = cimg+img;
+    
+    
+    
+    	
+    
+    
+    
+    imshow("Image1",cimg);
+    waitKey();
+    
+    
+    
+    
+    
 }
 
 // plot fourier descriptor
